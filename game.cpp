@@ -116,7 +116,8 @@ void Game::draw() {
 // 게임 루프가 종료되어야 하는지 여부를 반환한다.
 bool Game::shouldExit() { return end; }
 
-// 랜덤 tetromino
+
+
 Tetromino Game::rand_tetromino() {
     srand(time(NULL));
     switch (rand() % 6) {
@@ -134,6 +135,7 @@ Tetromino Game::rand_tetromino() {
         return Tetromino::L;
     }
 }
+
 // 아래 혹은 tetromino 위치에 다른 블럭이 몇칸 있는지 리턴한다
 int Game::is_underBlock(int x, int y) {
     int block_count = 0;
@@ -142,7 +144,7 @@ int Game::is_underBlock(int x, int y) {
             if (now_tetromino.check(i, j)) {
                 if (board_[x + i - 1][y + j - 1] == true)
                     block_count++;
-                if (board_[x + i - 1][y + j] == true && y != 18)
+                if (board_[x + i ][y + j] == true && y != 18)
                     block_count++;
             }
         }
@@ -195,7 +197,8 @@ void Game::bottom_check() {
 
 void Game::line_clear() {
     int block_count = 0;
-    for (int i = BOARD_HEIGHT -1; 0 < i; i--) {
+    for (int i = BOARD_HEIGHT -1; 0 <= i; i--) {
+        block_count = 0;
         for (int j = 0; j < BOARD_WIDTH; j++) {
             if (board_[j][i] == true) {
                 block_count++;
@@ -203,13 +206,15 @@ void Game::line_clear() {
         }
         if (block_count == BOARD_WIDTH) {
             line_clear_conut--;
-            for (int h = i; 0 < h; h--) {
-                for (int k = 0; k < BOARD_WIDTH; k++) {
+            for (int h = 0; h < BOARD_WIDTH; h++) {
+                for (int k = i; 0 < k; k--) {
                     board_[h][k] = board_[h][k - 1];
                 }
             }
+            for (int j = 0; j < BOARD_WIDTH; j++) {
+                board_[j][0] = false;
+            }
             i++;
-        } else
-            block_count = 0;
+        } 
     }
 }
